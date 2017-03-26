@@ -145,7 +145,7 @@ public class MyPanel extends JPanel {
 		}
 		return y;
 	}
-
+	//By Lemanuel Colon
 	public void genMines(){
 				int minesPlaced = 0;
 				while(minesPlaced < minesWanted){
@@ -160,6 +160,7 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
+	//By Lemanuel Colon
 	public void readMines(int x, int y){
 		if(minas[x][y] == -1){
 			Color newColor = Color.BLACK;
