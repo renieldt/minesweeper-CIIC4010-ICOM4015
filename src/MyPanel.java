@@ -20,7 +20,7 @@ public class MyPanel extends JPanel {
 	public String [][] gridAmount = new String [TOTAL_COLUMNS][TOTAL_ROWS];
 	public int x = -1;
 	public int y = -1;
-	public int mouseDownGridX = 0;
+	public int mouseDownGridX = 0; 
 	public int mouseDownGridY = 0;
 	public int difficult = 0;
 	
