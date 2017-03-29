@@ -13,6 +13,7 @@ public class MyPanel extends JPanel {
 	private static final int TOTAL_COLUMNS = 9;
 	private static final int TOTAL_ROWS = 10;   //Last row has only one cell
 	private int minesWanted = 20;
+	private Random random;
 	public int x = -1;
 	public int y = -1;
 	public int mouseDownGridX = 0;
@@ -20,6 +21,8 @@ public class MyPanel extends JPanel {
 	public int difficult = 0;
 	public Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
 	public int[][] minas = new int [TOTAL_COLUMNS][TOTAL_ROWS];
+	public int [][] around = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
 			throw new RuntimeException("INNER_CELL_SIZE must be positive!");
@@ -29,13 +32,6 @@ public class MyPanel extends JPanel {
 		}
 		if (TOTAL_ROWS + (new Random()).nextInt(1) < 3) {	//Use of "random" to prevent unwanted Eclipse warning
 			throw new RuntimeException("TOTAL_ROWS must be at least 3!");
-		}
-		
-		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //Top row
-			colorArray[x][0] = Color.WHITE;
-		}
-		for (int y = 0; y < TOTAL_ROWS; y++) {   //Left column
-			colorArray[0][y] = Color.WHITE;
 		}
 		
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //The rest of the grid
@@ -75,17 +71,54 @@ public class MyPanel extends JPanel {
 		//Draw an additional cell at the bottom left
 		//g.drawRect(x1 + GRID_X, y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS - 1)), INNER_CELL_SIZE + 1, INNER_CELL_SIZE + 1);
 
-		//Paint cell colors
-		for (int x = 0; x < TOTAL_COLUMNS; x++) {
-			for (int y = 0; y < TOTAL_ROWS - 1; y++) {
-				if ((x == 0) || (y != TOTAL_ROWS - 1)) {
-					Color c = colorArray[x][y];
-					g.setColor(c);
-					g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1))+1, INNER_CELL_SIZE, INNER_CELL_SIZE);
+		//Paint cell colors and look for nearby bombs
+				for (int x = 0; x < TOTAL_COLUMNS; x++) {
+					for (int y = 0; y < TOTAL_ROWS; y++) {
+						if ((x == 0) || (y != TOTAL_ROWS)) {
+							Color c = colorArray[x][y];
+							g.setColor(c);
+							g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
+							
+							if (colorArray[x][y].equals(Color.GRAY)) {
+								int nearby = setNumbers(x, y);
+								if((nearby != 0) && (nearby == 1)){
+									g.setColor(Color.BLUE);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 2)){
+									g.setColor(Color.RED);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 3)){
+									g.setColor(Color.GREEN);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 4)){
+									g.setColor(Color.YELLOW);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 5)){
+									g.setColor(Color.ORANGE);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 6)){
+									g.setColor(Color.BLACK);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 7)){
+									g.setColor(Color.PINK);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+								if((nearby != 0) && (nearby == 8)){
+									g.setColor(Color.MAGENTA);
+									g.drawString("" + nearby, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 12, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 21);
+								}
+							}
+
+						}
+					}
 				}
 			}
-		}	
-	}
 	
 	public int getColumns(){
 		return TOTAL_COLUMNS;
@@ -93,6 +126,23 @@ public class MyPanel extends JPanel {
 	public int getROWS(){
 		return TOTAL_ROWS;
 	}
+	
+	//Method to determine the adjacent cells with no mines and colors them gray
+	public void innocent(int x, int y){
+		if(setNumbers(x, y) == 0) {
+			for(int i = x - 1; i <= x + 1; i++) {
+				for (int j = y - 1; j <= y + 1; j++) {
+					if (i < getColumns() && i >= 0 && j < getROWS() && j >= 0) {
+						if(colorArray[i][j] == Color.WHITE){
+							colorArray[i][j] = Color.LIGHT_GRAY;
+							innocent(i, j);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	
 	public int getGridX(int x, int y) {
 		Insets myInsets = getInsets();
@@ -160,6 +210,33 @@ public class MyPanel extends JPanel {
 		}
 	}
 	
+	public void mineGenerator(){//Method generator of mines 
+		random = new Random();
+		for(int x = 0; x < minesWanted;){
+			int X = random.nextInt(TOTAL_COLUMNS);
+			int Y = random.nextInt(TOTAL_ROWS);
+			if(minas[X][Y] != 1){
+				minas[X][Y] = 1;
+				x++;
+			}
+		}
+	}
+	
+	public int setNumbers(int x, int y) {//Method to set the numbers of nearby mines 
+		int nearbyMines = 0;
+		for(int i = x-1; i <= x+1; i++) {
+			for(int j = y-1; j <= y+1; j++) {
+				if(i < TOTAL_COLUMNS && i >= 0 && j < TOTAL_ROWS && j >= 0 ) {
+					if(minas[i][j] == 1) {
+						around[x][y] = 2;
+						nearbyMines++;
+					}
+				}
+			}
+		}
+		return nearbyMines;
+	}
+	
 	//By Lemanuel Colon
 	public void readMines(int x, int y){
 		if(minas[x][y] == -1){
@@ -173,6 +250,18 @@ public class MyPanel extends JPanel {
 			
 		}
 		
+	}
+	
+	public boolean winGame(){// Method for winning
+		int gridCount=0; 
+		for (int i=0; i<TOTAL_COLUMNS; i++){
+			for(int j=0; j<TOTAL_ROWS; j++){
+				if(colorArray[i][j]==Color.LIGHT_GRAY){
+					gridCount++;
+				} 
+			}
+		}
+		return (gridCount==(TOTAL_COLUMNS*TOTAL_ROWS - minesWanted));
 	}
 }
 
