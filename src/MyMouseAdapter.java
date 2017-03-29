@@ -12,7 +12,7 @@ public class MyMouseAdapter extends MouseAdapter {
 	
 	public void mousePressed(MouseEvent e) {
 		Component c = e.getComponent();
-		while (!(c instanceof JFrame)) {
+		while (!(c instanceof JFrame)) { 
 			c = c.getParent();
 			if (c == null) {
 				return;
