@@ -255,7 +255,7 @@ public class MyPanel extends JPanel {
 	public boolean winGame(){// Method for winning
 		int gridCount=0; 
 		for (int i=0; i<TOTAL_COLUMNS; i++){
-			for(int j=0; j<TOTAL_ROWS; j++){
+			for(int j=0; j<TOTAL_ROWS; j++){ 
 				if(colorArray[i][j]==Color.LIGHT_GRAY){
 					gridCount++;
 				} 
