@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+
  
 public class MyMouseAdapter extends MouseAdapter {
 	
@@ -65,60 +66,58 @@ public class MyMouseAdapter extends MouseAdapter {
 		int y = e.getY();
 		myPanel.x = x;
 		myPanel.y = y;
-		int gridX = myPanel.getGridX(x, y);
-		int gridY = myPanel.getGridY(x, y);
-		
 		Color closed = Color.WHITE;
 		Color flag = Color.RED;
-		Color mina = Color.BLACK;
+		Color mine = Color.BLACK;
 		Color opened = Color.LIGHT_GRAY;
 
-		
+		int gridX = myPanel.getGridX(x, y);
+		int gridY = myPanel.getGridY(x, y);
 		
 		switch (e.getButton()){
 		case 1:		//Left mouse button
 			
 			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1)) {
-				//Had pressed outside
+				//Pressed outside
 				//Do nothing
 			} else {
 				if ((gridX == -1) || (gridY == -1)) {
-					//Is releasing outside
+					//Releasing outside
 					//Do nothing
 				} else {
 					if ((myPanel.mouseDownGridX != gridX) || (myPanel.mouseDownGridY != gridY)) {
-						//Released the mouse button on a different cell where it was pressed
+						//Released the mouse button on a different cell
 						//Do nothing
 					} else {
-						//Released the mouse button on the same cell where it was pressed
-						if (myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == flag) {
-							//On the left column and on the top row... do nothing
+						//Released and pressed in same cell
+						if (myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == flag) {
+
 						} 
 						else {
-							myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = closed;
+							myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = closed;
 							myPanel.innocent(myPanel.mouseDownGridX, myPanel.mouseDownGridY);
 							myPanel.repaint();
-							myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = Color.LIGHT_GRAY;
-							if(myPanel.wonGame()){
+							myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = Color.LIGHT_GRAY;
+							if(myPanel.gameWon()){
 								//Checks if the user have win the came 
-								JOptionPane.showMessageDialog(null, "You beated this game!", "Minesweeper", JOptionPane.INFORMATION_MESSAGE);
+								JOptionPane.showMessageDialog(null, "You beated this game!!", "Minesweeper", JOptionPane.INFORMATION_MESSAGE);
 								System.exit(0);
 							}
 						}
 						
 						
 						
-						if((myPanel.minas[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 1) && 
-								myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] != flag){
-							for (int r = 0; r < myPanel.getColumns(); r++){
-								for (int t = 0; t < myPanel.getROWS(); t++){
-									if(myPanel.minas[r][t] == 1){
-										myPanel.grid[r][t] = mina;
+						if((myPanel.mines[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == 1) && 
+								myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] != flag){
+							for (int r = 0; r < myPanel.getTotalColumns(); r++){
+								for (int t = 0; t < myPanel.getTotalRows(); t++){
+									if(myPanel.mines[r][t] == 1){
+										myPanel.gridCells[r][t] = mine;
 										myPanel.repaint();
 									}
 								}
 							}
-							JOptionPane.showMessageDialog(null, "You have found the bombs!", "Minesweeper", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, "You have stepped on a mine!", "Minesweeper", JOptionPane.INFORMATION_MESSAGE);
 							System.exit(0);
 						}
 					}
@@ -136,23 +135,23 @@ public class MyMouseAdapter extends MouseAdapter {
 					//Is releasing outside
 					//Do nothing
 				} else {
-					//Pressed and released in cell
+					//Click in the grid
 					if((myPanel.mouseDownGridX == gridX) && (myPanel.mouseDownGridY == gridY)){
-
-						if(myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == opened){
+						//White grid with right click
+						if(myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == opened){
 							//Do nothing
 						}
 						else {  
-
-							if(myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == closed){
-								myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = flag;
+							//Grid gray, incorporate the flag
+							if(myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == closed){
+								myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = flag;
 								myPanel.repaint();
 								
 							}
 							else{
-
-								if(myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == flag){
-									myPanel.grid[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = closed;
+								//If grid is a flag, remove it
+								if(myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] == flag){
+									myPanel.gridCells[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = closed;
 									myPanel.repaint();
 								}
 							}
