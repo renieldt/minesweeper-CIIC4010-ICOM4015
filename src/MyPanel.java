@@ -11,8 +11,8 @@ public class MyPanel extends JPanel {
 	private static final int GRID_X = 25;
 	private static final int GRID_Y = 60;
 	private static final int INNER_CELL_SIZE = 29;
-	private static final int TOTAL_COLUMNS = 9;
-	private static final int TOTAL_ROWS = 10;   //Last row has only one cell
+	public static final int TOTAL_COLUMNS = 9;
+	public static final int TOTAL_ROWS = 10;   //Last row has only one cell
 	private int minesWanted = 15;
 	private int maxFlags = minesWanted;
 	public Color[][] mineField = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
@@ -37,18 +37,15 @@ public class MyPanel extends JPanel {
 			throw new RuntimeException("TOTAL_ROWS must be at least 3!");
 		}
 
-		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //Top row
-			mineField[x][0] = Color.WHITE;
-		}
-		for (int y = 0; y < TOTAL_ROWS; y++) {   //Left column
-			mineField[0][y] = Color.WHITE;
-		}
-
+		
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {   //The rest of the grid
 			for (int y = 0; y < TOTAL_ROWS; y++) {
 				mineField[x][y] = Color.WHITE;
+				minas [x][y] = -1;
+				minesOnField[x][y] = false;
 			}
 		}
+		
 	}
 
 
@@ -152,47 +149,23 @@ public class MyPanel extends JPanel {
 		return y;
 	}
 
-	public boolean isMine(int x, int y) {
-		if (minas[x][y] == -1){
-			return true;
-		}
-		return false;
-	}
+		
 
 	//By Lemanuel Colon
 	public void genMines(){
 		int minesPlaced = 0;
 		while(minesPlaced < minesWanted){
-			int x = new Random().nextInt(TOTAL_COLUMNS);
-			int y = new Random().nextInt(TOTAL_ROWS-1);
-			if(minas[x][y] == -1){
-				x = new Random().nextInt(TOTAL_COLUMNS);
-				y = new Random().nextInt(TOTAL_ROWS-1); 
-			}
-			minas[x][y] = -1;
-			minesPlaced++;
-		}
-	}
-
-	//By Lemanuel Colon
-	public void readMines(int x, int y){
-		if(minas[x][y] == -1){
-			mineField[x][y] = Color.BLACK;
-			this.repaint();
-
-			for(int i = 0; i < this.getROWS() - 1 ; i++){
-				for(int j = 0 ; j < this.getColumns() ; j++){
-					if(minas[i][j] == -1){
-						mineField[i][j] = Color.BLACK;
-					}
+			for(int X = 0; X < MyPanel.TOTAL_COLUMNS; X++){
+				
+				for(int Y = 0; Y < MyPanel.TOTAL_ROWS -1; Y++) {
+					int rn = new Random().nextInt(100);
+					if(rn == 47){
+						minesOnField[X][Y] = true;
+						minesPlaced++;
+						System.out.println("Bomb on: " +X + " "+Y);					}
 				}
 			}
-
-		} else {
-			minas[x][y] = 0; 
-			mineField[x][y] = Color.LIGHT_GRAY;
-			this.checkField(x, y);
-			this.repaint();	
+			
 		}
 	}
 
