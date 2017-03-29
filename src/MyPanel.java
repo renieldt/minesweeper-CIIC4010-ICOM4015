@@ -23,7 +23,7 @@ public class MyPanel extends JPanel {
 	public int y = -1;
 	public int mouseDownGridX = 0;
 	public int mouseDownGridY = 0;
-	public int difficult = 0;
+	public int difficult = 0; 
 
 
 	public MyPanel() {   //This is the constructor... this code runs first to initialize

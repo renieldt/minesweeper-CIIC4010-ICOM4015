@@ -171,7 +171,7 @@ public class MyMouseAdapter extends MouseAdapter {
 					if (X == n && Y == m){
 						continue;
 					}
-						check(X, Y, myPanel);
+						check(X, Y, myPanel); 
 					
 				}
 			}
